@@ -72,7 +72,7 @@ public class HttpClientHelper
             client2.DefaultRequestHeaders.Accept.Clear();
             client2.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            string password = "amd1bzpBZHZlbnQuNw==";
+            string password = "YXh5c3F1Okp1bmUyNSE=";
             //Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "jguo", "")));
 
             client2.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);

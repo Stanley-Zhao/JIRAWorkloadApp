@@ -62,7 +62,7 @@ namespace JIRAWorkLogAPP
 
             string dateQuery = "worklogDate%20>%20%27" + dtStartSearch.ToString("yyyy-MM-dd") + "%27%20and%20worklogDate%20<%20" + dtEnd.ToString("yyyy-MM-dd");
             //worklogDate%20>%20%272016-05-23%27%20and%20worklogDate%20<%20endOfDay()
-            var resultH = HttpClientHelper.PostDataToApi("api/2/search?fields=worklog,summary&jql=filter=27470%20and%20" + dateQuery + "%20");
+            var resultH = HttpClientHelper.PostDataToApi("api/2/search?fields=worklog,summary&jql=filter=27781%20and%20" + dateQuery + "%20");
 
             JIRASearchResult searchResult = JsonConvert.DeserializeObject<JIRASearchResult>(resultH.Result);
 
