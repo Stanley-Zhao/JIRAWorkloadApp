@@ -1,148 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Web;
 using System.Threading.Tasks;
-using System.IO;
 
 public class HttpClientHelper
 {
-    public static List<T> GetDataFromApi<T>(string requestUri)
-    {
-        var data = new List<T>();
-        using (var client = new HttpClient())
-        {
-            var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+	public static void DeleteDataFromApi(string requestUri)
+	{
+		string data = "";
+		using (var client = new HttpClient())
+		{
+			var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
+			client.BaseAddress = new Uri(baseUrl);
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            // HTTP GET
-            HttpResponseMessage response = client.GetAsync(requestUri).Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            try
-            {
-                data = response.Content.ReadAsAsync<List<T>>().Result;
-            }
-            catch (Exception e)
-            {
-                return data;
-            }
-            //}
-        }
-        return data;
-    }
+			// HTTP Delete
+			HttpResponseMessage response = client.DeleteAsync(requestUri).Result;
+			if (response.IsSuccessStatusCode)
+			{
+				data = response.Content.ReadAsAsync<string>().Result;
+			}
+		}
+	}
 
-    public static string GetSingleDataFromApi<T>(string requestUri) where T : new()
-    {
-        System.Text.Encoding encode = System.Text.Encoding.ASCII;
-        string data;
-        using (var client = new HttpClient())
-        {
-            var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+	public static List<T> GetDataFromApi<T>(string requestUri)
+	{
+		var data = new List<T>();
+		using (var client = new HttpClient())
+		{
+			var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
+			client.BaseAddress = new Uri(baseUrl);
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            // HTTP GET
-            HttpResponseMessage response = client.GetAsync(requestUri).Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            data = response.Content.ReadAsAsync<String>().Result;
-            //}
-        }
-        return data;
-    }
+			// HTTP GET
+			HttpResponseMessage response = client.GetAsync(requestUri).Result;
+			try
+			{
+				data = response.Content.ReadAsAsync<List<T>>().Result;
+			}
+			catch (Exception e)
+			{
+				return data;
+			}
+		}
+		return data;
+	}
 
+	public static string GetSingleDataFromApi<T>(string requestUri) where T : new()
+	{
+		System.Text.Encoding encode = System.Text.Encoding.ASCII;
+		string data;
+		using (var client = new HttpClient())
+		{
+			var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
+			client.BaseAddress = new Uri(baseUrl);
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-    public async static Task<string> PostDataToApi(string requestUri)
-    {
-        string result;
-        var baseAddress = new Uri(ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString);
+			// HTTP GET
+			HttpResponseMessage response = client.GetAsync(requestUri).Result;
+			data = response.Content.ReadAsAsync<String>().Result;			
+		}
+		return data;
+	}
 
-        using (var client2 = new HttpClient())
-        {
-            var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
-            client2.BaseAddress = new Uri(baseUrl);
-            client2.DefaultRequestHeaders.Accept.Clear();
-            client2.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+	public async static Task<string> PostDataToApi(string requestUri)
+	{
+		string result;
+		var baseAddress = new Uri(ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString);
 
-            string password = "YXh5c3F1Okp1bmUyNSE=";
-            //Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "jguo", "")));
+		using (var client2 = new HttpClient())
+		{
+			var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
+			client2.BaseAddress = new Uri(baseUrl);
+			client2.DefaultRequestHeaders.Accept.Clear();
+			client2.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            client2.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
+			//string password = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(string.Format("{0}:{1}", "axysqu", "June25!")));
+			string password = "YXh5c3F1Okp1bmUyNSE=";
 
-            //client2.DefaultRequestHeaders.Add("cookie", ses);
-            //client2.DefaultRequestHeaders.Authorization.add
+			client2.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", password);
 
-            // HTTP GET
-            HttpResponseMessage response = client2.GetAsync(requestUri).Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            result = await response.Content.ReadAsStringAsync();
+			// HTTP GET
+			HttpResponseMessage response = client2.GetAsync(requestUri).Result;
+			result = await response.Content.ReadAsStringAsync();
+		}
 
-            //string yy   = response2.Content.read();
-            //}
-        }
+		return result;
+	}
 
-        return result;
-    }
+	public static string PutDataToApi<T>(string requestUri, T data)
+	{
+		using (var client = new HttpClient())
+		{
+			var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
+			client.BaseAddress = new Uri(baseUrl);
+			client.DefaultRequestHeaders.Accept.Clear();
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-    //private string GetEncodedCredentials()
-    //{
-    //    string mergedCredentials = string.Format("{0}:{1}", m_Username, m_Password);
-    //    byte[] byteCredentials = Encoding.UTF8.GetBytes(mergedCredentials);
-    //    return Convert.ToBase64String(byteCredentials);
-    //}
-
-
-
-
-    public static string PutDataToApi<T>(string requestUri, T data)
-    {
-        using (var client = new HttpClient())
-        {
-            var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // HTTP PUT
-            HttpResponseMessage response = client.PutAsJsonAsync(requestUri, data).Result;
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                string id = response.Content.ReadAsAsync<string>().Result;
-                //Uri gizmoUrl = response.Headers.Location;
-                return id.ToString();
-            }
-            else
-            {
-                return "";
-            }
-        }
-    }
-
-    public static void DeleteDataFromApi(string requestUri)
-    {
-        string data = "";
-        using (var client = new HttpClient())
-        {
-            var baseUrl = ConfigurationManager.ConnectionStrings["ApiUrl"].ConnectionString;
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // HTTP Delete
-            HttpResponseMessage response = client.DeleteAsync(requestUri).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                data = response.Content.ReadAsAsync<string>().Result;
-            }
-        }
-    }
+			// HTTP PUT
+			HttpResponseMessage response = client.PutAsJsonAsync(requestUri, data).Result;
+			if (response.StatusCode == HttpStatusCode.OK)
+			{
+				string id = response.Content.ReadAsAsync<string>().Result;
+				//Uri gizmoUrl = response.Headers.Location;
+				return id.ToString();
+			}
+			else
+			{
+				return "";
+			}
+		}
+	}
 }
